@@ -1,0 +1,5 @@
+id,school_name,school_name_hi,slug,location,location_hi,contact_person,phone,address,logo_url,featured,website_status,story_ids
+1,"Madhepura Public School","मधेपुरा पब्लिक स्कूल","madhepura-public-school","Madhepura","मधेपुरा","Sharda Sen","9835102324","State Bank of India Road, Madhepura, Bihar 852113","https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=150","true","Completed","1"
+2,"Saharsa Academy","सहरसा एकेडमी","saharsa-academy","Saharsa","सहरसा","Ramanand Jha","9934567890","Ward No. 12, Saharsa, Bihar 852201","https://images.unsplash.com/photo-1544717305-2782549b5136?w=150","true","In Progress","2"
+3,"Purnia High School","पूर्णिया हाई स्कूल","purnia-high-school","Purnia","पूर्णिया","Ranjan Kumar","9431234567","Line Bazar, Purnia, Bihar 854301","https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=150","false","Not Started","3"
+4,"Supaul Public School","सुपौल पब्लिक स्कूल","supaul-public-school","Supaul","सुपौल","Madan Mohan Lal","9801122334","Main Road, Supaul, Bihar 852131","https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=150","true","Completed","4"

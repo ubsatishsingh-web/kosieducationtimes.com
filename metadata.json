@@ -1,0 +1,6 @@
+{
+  "name": "Kosi Education Times",
+  "description": "Bilingual news and media website covering schools and education in the Kosi region of Bihar (Madhepura, Saharsa, Purnia, and Supaul districts). Run by Zera Technologies.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

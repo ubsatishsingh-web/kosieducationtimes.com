@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;400;500;600;700&family=Noto+Serif+Devanagari:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Noto Sans Devanagari", "Inter", system-ui, -apple-system, sans-serif;
+  --font-serif: "Noto Serif Devanagari", Georgia, Cambria, serif;
+
+  --color-brand-crimson: #a52a2a;
+  --color-brand-terracotta: #c04040;
+  --color-brand-cream: #fcfaf7;
+  --color-brand-paper: #ffffff;
+  --color-brand-charcoal: #1a1a1a;
+  --color-brand-gold: #c48a10;
+  --color-brand-forest: #1e3f20;
+  --color-brand-border: rgba(26, 26, 26, 0.1);
+
+  --animate-fade-in: fade-in 0.3s ease-out;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-brand-cream);
+    color: var(--color-brand-charcoal);
+    font-family: var(--font-sans);
+    line-height: 1.75; /* Generous line height for clear Devanagari */
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--color-brand-charcoal);
+  }
+}
+
+/* Custom class for traditional news headers */
+.newspaper-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.newspaper-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 3px;
+  background-color: var(--color-brand-crimson);
+}
+
+.newspaper-underline-double {
+  position: relative;
+  display: inline-block;
+}
+
+.newspaper-underline-double::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 100%;
+  height: 4px;
+  border-top: 1px solid var(--color-brand-charcoal);
+  border-bottom: 2px solid var(--color-brand-charcoal);
+}
+
