@@ -1092,7 +1092,11 @@ function PrefilledContactFormWrapper({
   // Admin Config State
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [customSubmitUrl, setCustomSubmitUrl] = useState(() => {
-    return localStorage.getItem("csv_contact_submit_url") || urlConfig.contactSubmitUrl || "";
+    const saved = localStorage.getItem("csv_contact_submit_url");
+    if (saved && saved.trim().startsWith("https://")) {
+      return saved.trim();
+    }
+    return urlConfig.contactSubmitUrl || "";
   });
   const [isUrlSaved, setIsUrlSaved] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
