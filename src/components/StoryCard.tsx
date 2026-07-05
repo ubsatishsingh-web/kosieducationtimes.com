@@ -42,7 +42,8 @@ export default function StoryCard({ story, currentLanguage, onSelect }: StoryCar
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.3 }}
-      className="bg-brand-paper border-2 border-brand-border rounded-xl overflow-hidden shadow-xs hover:shadow-md hover:border-brand-crimson/50 transition-all flex flex-col h-full group"
+      onClick={() => onSelect(story.slug)}
+      className="bg-brand-paper border-2 border-brand-border rounded-xl overflow-hidden shadow-xs hover:shadow-md hover:border-brand-crimson/50 transition-all flex flex-col h-full group cursor-pointer"
     >
       {/* Cover Image Container */}
       <div className="relative aspect-video overflow-hidden bg-brand-cream border-b border-brand-border">

@@ -97,6 +97,7 @@ export default function App() {
 
   // Router State
   const [route, setRoute] = useState<RouteState>({ page: "home" });
+  const [copiedLink, setCopiedLink] = useState(false);
 
   // Update language preference in localStorage
   const handleSetLanguage = (lang: Language) => {
@@ -602,6 +603,64 @@ export default function App() {
                         <p className="text-sm sm:text-base text-brand-charcoal/70 leading-relaxed font-serif italic border-l-4 border-brand-gold pl-4 mt-2">
                           {summary}
                         </p>
+
+                        {/* Social Share Buttons */}
+                        <div className="flex flex-wrap items-center gap-3 mt-5 pt-4 border-t border-brand-border/60">
+                          <span className="text-xs font-bold text-brand-charcoal/60 uppercase tracking-wider font-sans">
+                            {currentLanguage === "hi" ? "साझा करें:" : "Share:"}
+                          </span>
+                          <div className="flex flex-wrap items-center gap-2">
+                            {/* WhatsApp */}
+                            <a
+                              href={`https://api.whatsapp.com/send?text=${encodeURIComponent(title + " - " + window.location.origin + "/story/" + story.slug)}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#25D366] hover:bg-[#20ba59] text-white text-xs font-bold rounded-lg shadow-2xs transition-colors focus:outline-none cursor-pointer"
+                            >
+                              <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.625 1.451 5.403.002 9.803-4.394 9.806-9.799.002-2.618-1.016-5.08-2.867-6.932C16.357 1.99 13.9 1.01 11.997 1.01c-5.41 0-9.814 4.403-9.817 9.81-.001 1.767.472 3.491 1.371 5.011L2.553 21.36l5.72-1.499c-1.3-.005-.2.1 1.62-.707z" />
+                              </svg>
+                              <span>WhatsApp</span>
+                            </a>
+
+                            {/* Facebook */}
+                            <a
+                              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.origin + "/story/" + story.slug)}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#1877F2] hover:bg-[#166fe5] text-white text-xs font-bold rounded-lg shadow-2xs transition-colors focus:outline-none cursor-pointer"
+                            >
+                              <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                              </svg>
+                              <span>Facebook</span>
+                            </a>
+
+                            {/* Copy Link */}
+                            <button
+                              onClick={() => {
+                                const storyUrl = `${window.location.origin}/story/${story.slug}`;
+                                navigator.clipboard.writeText(storyUrl).then(() => {
+                                  setCopiedLink(true);
+                                  setTimeout(() => setCopiedLink(false), 2000);
+                                });
+                              }}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-charcoal hover:bg-brand-crimson text-brand-cream text-xs font-bold rounded-lg shadow-2xs transition-all focus:outline-none cursor-pointer"
+                            >
+                              {copiedLink ? (
+                                <>
+                                  <Check className="w-3.5 h-3.5 text-[#25D366]" />
+                                  <span>{currentLanguage === "hi" ? "कॉपी हो गया!" : "Copied!"}</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Copy className="w-3.5 h-3.5" />
+                                  <span>{currentLanguage === "hi" ? "लिंक कॉपी करें" : "Copy Link"}</span>
+                                </>
+                              )}
+                            </button>
+                          </div>
+                        </div>
                       </div>
 
                       {/* Cover Photo */}
