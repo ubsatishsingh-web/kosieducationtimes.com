@@ -59,9 +59,10 @@ export default function SchoolCard({
       initial={{ opacity: 0, y: 12 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
+      onClick={() => onSelect(school.slug)}
       className={`bg-brand-paper border-2 ${
         school.featured ? "border-brand-gold bg-[#fffdfa]" : "border-brand-border"
-      } rounded-xl overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col h-full`}
+      } rounded-xl overflow-hidden shadow-xs hover:shadow-md hover:border-brand-crimson/50 transition-all flex flex-col h-full cursor-pointer group`}
     >
       {/* Featured Banner Accent */}
       {school.featured && (
@@ -88,7 +89,7 @@ export default function SchoolCard({
             <MapPin className="w-3 h-3" />
             <span>{location}</span>
           </span>
-          <h3 className="text-base sm:text-lg font-bold font-serif text-brand-charcoal leading-tight">
+          <h3 className="text-base sm:text-lg font-bold font-serif text-brand-charcoal leading-tight group-hover:text-brand-crimson transition-colors">
             {name}
           </h3>
           <p className="text-xs text-brand-charcoal/60 font-sans line-clamp-1">
@@ -112,7 +113,11 @@ export default function SchoolCard({
           {/* Contact Phone */}
           <div className="flex items-center gap-2">
             <Phone className="w-3.5 h-3.5 text-brand-charcoal/40 shrink-0" />
-            <a href={`tel:${school.phone}`} className="font-mono font-semibold hover:text-brand-crimson transition-colors">
+            <a
+              href={`tel:${school.phone}`}
+              onClick={(e) => e.stopPropagation()}
+              className="font-mono font-semibold hover:text-brand-crimson transition-colors relative z-10"
+            >
               {school.phone}
             </a>
           </div>
@@ -131,7 +136,10 @@ export default function SchoolCard({
         <div className="mt-auto pt-4 flex flex-col gap-2">
           {/* View Profile Action */}
           <button
-            onClick={() => onSelect(school.slug)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelect(school.slug);
+            }}
             className="w-full py-2.5 bg-brand-cream hover:bg-brand-crimson/10 text-brand-charcoal hover:text-brand-crimson border border-brand-border rounded-lg text-xs font-bold transition-all focus:outline-none flex items-center justify-center gap-1"
           >
             <span>{t.viewProfile}</span>
@@ -143,7 +151,8 @@ export default function SchoolCard({
             href="https://zeratech.io"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full py-2 bg-[#fdfaf2] hover:bg-brand-gold/15 text-brand-terracotta border border-brand-terracotta/20 hover:border-brand-gold rounded-lg text-[11px] font-bold transition-all focus:outline-none flex items-center justify-center gap-1 text-center"
+            onClick={(e) => e.stopPropagation()}
+            className="w-full py-2 bg-[#fdfaf2] hover:bg-brand-gold/15 text-brand-terracotta border border-brand-terracotta/20 hover:border-brand-gold rounded-lg text-[11px] font-bold transition-all focus:outline-none flex items-center justify-center gap-1 text-center relative z-10"
           >
             <Sparkles className="w-3.5 h-3.5 text-brand-gold animate-pulse shrink-0" />
             <span className="truncate">{t.getWebsite}</span>

@@ -309,6 +309,8 @@ export default function App() {
       }
     };
 
+    const currentUrl = typeof window !== "undefined" ? window.location.href : baseUrl;
+
     // Update Meta Tags
     updateMetaTag('meta[name="description"]', 'content', desc);
     updateMetaTag('meta[name="title"]', 'content', title);
@@ -318,6 +320,7 @@ export default function App() {
     updateMetaTag('meta[property="og:description"]', 'content', desc);
     updateMetaTag('meta[property="og:image"]', 'content', image);
     updateMetaTag('meta[property="og:image:secure_url"]', 'content', image);
+    updateMetaTag('meta[property="og:url"]', 'content', currentUrl);
     
     // Fallback link image_src
     try {
@@ -336,6 +339,7 @@ export default function App() {
     updateMetaTag('meta[property="twitter:title"]', 'content', title);
     updateMetaTag('meta[property="twitter:description"]', 'content', desc);
     updateMetaTag('meta[property="twitter:image"]', 'content', image);
+    updateMetaTag('meta[property="twitter:url"]', 'content', currentUrl);
   }, [route, stories, schools, currentLanguage]);
 
   // Triggered when a school's digital consultation CTA is clicked
@@ -612,7 +616,7 @@ export default function App() {
                           <div className="flex flex-wrap items-center gap-2">
                             {/* WhatsApp */}
                             <a
-                              href={`https://api.whatsapp.com/send?text=${encodeURIComponent(title + " - " + window.location.origin + "/story/" + story.slug)}`}
+                              href={`https://wa.me/?text=${encodeURIComponent(title + " - " + window.location.origin + "/story/" + story.slug)}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#25D366] hover:bg-[#20ba59] text-white text-xs font-bold rounded-lg shadow-2xs transition-colors focus:outline-none cursor-pointer"
