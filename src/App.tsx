@@ -1203,37 +1203,25 @@ function doGet(e) {
 
     if (activeSubmitUrl) {
       try {
-        // Try submitting using standard fetch CORS request
+        // Use a single no-cors fetch request. Google Apps Script redirects will cause standard CORS mode 
+        // to throw a network error (triggering a false-negative catch block), but no-cors handles the redirect seamlessly.
         await fetch(activeSubmitUrl, {
           method: "POST",
+          mode: "no-cors",
           headers: {
-            "Content-Type": "text/plain;charset=utf-8", // text/plain prevents CORS preflight issues with Google Apps Script
+            "Content-Type": "text/plain;charset=utf-8",
           },
           body: JSON.stringify(payload),
         });
         
         setIsSubmitted(true);
-      } catch (err) {
-        console.warn("CORS/Fetch issue, attempting fallback submission mode:", err);
-        try {
-          // Fallback with no-cors mode (very reliable for Google Apps Script redirects)
-          await fetch(activeSubmitUrl, {
-            method: "POST",
-            mode: "no-cors",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
-          });
-          setIsSubmitted(true);
-        } catch (err2: any) {
-          console.error("Fallback submission failed too:", err2);
-          setSubmitError(
-            currentLanguage === "hi"
-              ? "सबमिट करने में त्रुटि हुई। हालांकि, आपका डेटा इस डिवाइस पर स्थानीय रूप से बैकअप कर लिया गया है!"
-              : "Failed to submit to Google Sheet. However, your message is saved securely on this device's backup!"
-          );
-        }
+      } catch (err: any) {
+        console.error("Form submission failed:", err);
+        setSubmitError(
+          currentLanguage === "hi"
+            ? "सबमिट करने में त्रुटि हुई। हालांकि, आपका डेटा इस डिवाइस पर स्थानीय रूप से बैकअप कर लिया गया है!"
+            : "Failed to submit to Google Sheet. However, your message is saved securely on this device's backup!"
+        );
       } finally {
         setIsSubmitting(false);
       }
