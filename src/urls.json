@@ -1,5 +1,6 @@
 {
-  "storiesUrl": "",
-  "schoolsUrl": "",
-  "mediaUrl": ""
+  "storiesUrl": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQpiHkDtoMdOd7ylfqJhaG8HurE2leh3sTFwKVDomUIOCO1A9jmkYkhQ4Sxvr41FdX0jVeac7WMc1nv/pub?gid=0&single=true&output=csv",
+  "schoolsUrl": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQpiHkDtoMdOd7ylfqJhaG8HurE2leh3sTFwKVDomUIOCO1A9jmkYkhQ4Sxvr41FdX0jVeac7WMc1nv/pub?gid=469496278&single=true&output=csv",
+  "mediaUrl": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQpiHkDtoMdOd7ylfqJhaG8HurE2leh3sTFwKVDomUIOCO1A9jmkYkhQ4Sxvr41FdX0jVeac7WMc1nv/pubhtml?gid=795599519&single=true",
+  "contactSubmitUrl": ""
 }
