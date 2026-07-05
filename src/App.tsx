@@ -132,7 +132,12 @@ export default function App() {
 
   // Handle manual navigation
   const navigate = (page: string, slug?: string) => {
-    if (page === "home") window.location.hash = "";
+    if (page === "home") {
+      window.location.hash = "";
+      if (typeof window !== "undefined" && window.history && window.history.replaceState) {
+        window.history.replaceState(null, "", window.location.pathname + window.location.search);
+      }
+    }
     else if (page === "schools") window.location.hash = "#/schools";
     else if (page === "about") {
       window.location.hash = slug ? `#/about?prefill=${encodeURIComponent(slug)}` : "#/about";
@@ -224,6 +229,11 @@ export default function App() {
     const handleHashChange = () => {
       setRoute(getRouteFromHash());
       window.scrollTo({ top: 0, behavior: "smooth" });
+
+      // Clean up trailing '#' from address bar if on home page
+      if (window.location.hash === "" && window.history && window.history.replaceState) {
+        window.history.replaceState(null, "", window.location.pathname + window.location.search);
+      }
     };
 
     window.addEventListener("hashchange", handleHashChange);
@@ -235,21 +245,24 @@ export default function App() {
     };
   }, []);
 
-  // Dynamic Page Metadata (SEO & Social Sharing Preview)
-  useEffect(() => {
-    let title = currentLanguage === "hi" ? "कोसी एजुकेशन टाइम्स | Kosi Education Times" : "Kosi Education Times | Celebrating Kosi Schools";
+    // Dynamic Page Metadata (SEO & Social Sharing Preview)
+    useEffect(() => {
+      const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://www.kosieducationtimes.com";
+      let title = currentLanguage === "hi" ? "कोसी एजुकेशन टाइम्स | Kosi Education Times" : "Kosi Education Times | Celebrating Kosi Schools";
     let desc = currentLanguage === "hi" 
       ? "कोसी क्षेत्र (मधेपुरा, सहरसा, पूर्णिया, सुपौल) के स्कूलों, शिक्षकों और शिक्षा जगत की उपलब्धियों, नवाचारों और समाचारों को समर्पित एक प्रमुख द्विभाषी मीडिया मंच।"
       : "Kosi Education Times is a premier bilingual media platform celebrating achievements, innovations, and news of schools in Bihar.";
-    let image = "/kosi_edu_banner.jpg";
+    let image = `${baseUrl}/kosi_edu_banner.jpg`;
 
     if (route.page === "story" && route.slug) {
       const activeStory = stories.find(s => s.slug === route.slug);
       if (activeStory) {
         title = currentLanguage === "hi" ? `${activeStory.title_hi} - कोसी एजुकेशन टाइम्स` : `${activeStory.title_en} - Kosi Education Times`;
         desc = currentLanguage === "hi" ? activeStory.summary_hi : activeStory.summary_en;
-        if (activeStory.cover_image_url && activeStory.cover_image_url.startsWith("http")) {
-          image = activeStory.cover_image_url;
+        if (activeStory.cover_image_url) {
+          image = activeStory.cover_image_url.startsWith("http")
+            ? activeStory.cover_image_url
+            : `${baseUrl}${activeStory.cover_image_url.startsWith("/") ? "" : "/"}${activeStory.cover_image_url}`;
         }
       }
     } else if (route.page === "school" && route.slug) {
@@ -259,8 +272,10 @@ export default function App() {
         desc = currentLanguage === "hi" 
           ? `${activeSchool.school_name_hi}, ${activeSchool.location_hi} की प्रोफ़ाइल और विवरण। कोसी एजुकेशन टाइम्स पर देखें।`
           : `Profile and details of ${activeSchool.school_name}, ${activeSchool.location} on Kosi Education Times.`;
-        if (activeSchool.logo_url && activeSchool.logo_url.startsWith("http")) {
-          image = activeSchool.logo_url;
+        if (activeSchool.logo_url) {
+          image = activeSchool.logo_url.startsWith("http")
+            ? activeSchool.logo_url
+            : `${baseUrl}${activeSchool.logo_url.startsWith("/") ? "" : "/"}${activeSchool.logo_url}`;
         }
       }
     } else if (route.page === "schools") {
