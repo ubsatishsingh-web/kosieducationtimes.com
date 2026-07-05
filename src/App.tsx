@@ -313,6 +313,20 @@ export default function App() {
     updateMetaTag('meta[property="og:title"]', 'content', title);
     updateMetaTag('meta[property="og:description"]', 'content', desc);
     updateMetaTag('meta[property="og:image"]', 'content', image);
+    updateMetaTag('meta[property="og:image:secure_url"]', 'content', image);
+    
+    // Fallback link image_src
+    try {
+      let linkElement = document.querySelector('link[rel="image_src"]');
+      if (!linkElement) {
+        linkElement = document.createElement("link");
+        linkElement.setAttribute("rel", "image_src");
+        document.head.appendChild(linkElement);
+      }
+      linkElement.setAttribute("href", image);
+    } catch (e) {
+      console.error("Failed to update link[rel=\"image_src\"]", e);
+    }
     
     // Twitter
     updateMetaTag('meta[property="twitter:title"]', 'content', title);
