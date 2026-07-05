@@ -1074,6 +1074,7 @@ function PrefilledContactFormWrapper({
   prefillOrgName?: string;
 }) {
   const t = translations[currentLanguage];
+  const isAdmin = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("admin") === "true";
 
   const [name, setName] = useState("");
   const [org, setOrg] = useState(prefillOrgName || "");
@@ -1377,79 +1378,80 @@ function doGet(e) {
       </div>
 
       {/* ADMIN CONTROL PANEL - GOOGLE SHEET INTEGRATION */}
-      <div className="bg-brand-paper border border-brand-border rounded-xl shadow-2xs overflow-hidden font-sans">
-        <button
-          onClick={() => setShowAdminPanel(!showAdminPanel)}
-          className="w-full px-5 py-4 flex items-center justify-between bg-brand-cream/40 border-b border-brand-border hover:bg-brand-cream/80 transition-colors focus:outline-none text-left"
-        >
-          <div className="flex items-center gap-2.5">
-            <Settings className="w-4 h-4 text-brand-crimson animate-spin-slow" />
-            <div>
-              <h4 className="font-bold text-sm text-brand-charcoal flex items-center gap-2">
-                <span>गूगल शीट एडमिन सेटिंग्स</span>
-                <span className="text-xs font-normal text-brand-charcoal/50">| Google Sheet Admin Settings</span>
-              </h4>
-            </div>
-          </div>
-          {showAdminPanel ? (
-            <ChevronUp className="w-4 h-4 text-brand-charcoal/60" />
-          ) : (
-            <ChevronDown className="w-4 h-4 text-brand-charcoal/60" />
-          )}
-        </button>
-
-        {showAdminPanel && (
-          <div className="p-5 flex flex-col gap-6">
-            {/* Submit URL configuration */}
-            <div className="flex flex-col gap-2">
-              <label className="text-xs font-bold text-brand-charcoal/80 block uppercase tracking-wide">
-                Google Apps Script Web App Submit URL
-              </label>
-              <div className="flex gap-2">
-                <input
-                  type="url"
-                  placeholder="https://script.google.com/macros/s/.../exec"
-                  value={customSubmitUrl}
-                  onChange={(e) => setCustomSubmitUrl(e.target.value)}
-                  className="flex-1 text-xs px-3 py-2.5 bg-brand-cream border border-brand-border rounded-md font-mono focus:outline-none focus:border-brand-crimson"
-                />
-                <button
-                  onClick={handleSaveUrl}
-                  className="px-4 py-2 bg-brand-charcoal hover:bg-brand-crimson text-brand-cream text-xs font-bold rounded-md transition-colors cursor-pointer shrink-0"
-                >
-                  {isUrlSaved ? (currentLanguage === "hi" ? "सुरक्षित!" : "Saved!") : (currentLanguage === "hi" ? "सहेजें" : "Save")}
-                </button>
+      {isAdmin && (
+        <div className="bg-brand-paper border border-brand-border rounded-xl shadow-2xs overflow-hidden font-sans">
+          <button
+            onClick={() => setShowAdminPanel(!showAdminPanel)}
+            className="w-full px-5 py-4 flex items-center justify-between bg-brand-cream/40 border-b border-brand-border hover:bg-brand-cream/80 transition-colors focus:outline-none text-left"
+          >
+            <div className="flex items-center gap-2.5">
+              <Settings className="w-4 h-4 text-brand-crimson animate-spin-slow" />
+              <div>
+                <h4 className="font-bold text-sm text-brand-charcoal flex items-center gap-2">
+                  <span>गूगल शीट एडमिन सेटिंग्स</span>
+                  <span className="text-xs font-normal text-brand-charcoal/50">| Google Sheet Admin Settings</span>
+                </h4>
               </div>
-              <p className="text-[11px] text-brand-charcoal/60 leading-relaxed mt-1">
-                {currentLanguage === "hi"
-                  ? "गूगल शीट से सबमिशन को जोड़ने के लिए नीचे दिए गए 3 चरणों का पालन करें और जेनरेट हुआ वेब एप URL यहाँ सहेजें।"
-                  : "Paste your published Google Apps Script URL here to route contact form inquiries directly to your spreadsheet."}
-              </p>
             </div>
+            {showAdminPanel ? (
+              <ChevronUp className="w-4 h-4 text-brand-charcoal/60" />
+            ) : (
+              <ChevronDown className="w-4 h-4 text-brand-charcoal/60" />
+            )}
+          </button>
 
-            {/* How to link instructions */}
-            <div className="border-t border-brand-border/60 pt-4 flex flex-col gap-3">
-              <h5 className="font-bold text-xs text-brand-crimson uppercase tracking-wide flex items-center gap-1">
-                <Info className="w-3.5 h-3.5" />
-                <span>गूगल शीट जोड़ने के चरण / How to link your Google Sheet</span>
-              </h5>
-              
-              <ol className="text-xs text-brand-charcoal/80 list-decimal list-inside flex flex-col gap-2.5 leading-relaxed pl-1">
-                <li>
-                  <span className="font-semibold">{currentLanguage === "hi" ? "गूगल शीट स्क्रिप्ट खोलें:" : "Open Apps Script:"}</span>{" "}
+          {showAdminPanel && (
+            <div className="p-5 flex flex-col gap-6">
+              {/* Submit URL configuration */}
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-bold text-brand-charcoal/80 block uppercase tracking-wide">
+                  Google Apps Script Web App Submit URL
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="url"
+                    placeholder="https://script.google.com/macros/s/.../exec"
+                    value={customSubmitUrl}
+                    onChange={(e) => setCustomSubmitUrl(e.target.value)}
+                    className="flex-1 text-xs px-3 py-2.5 bg-brand-cream border border-brand-border rounded-md font-mono focus:outline-none focus:border-brand-crimson"
+                  />
+                  <button
+                    onClick={handleSaveUrl}
+                    className="px-4 py-2 bg-brand-charcoal hover:bg-brand-crimson text-brand-cream text-xs font-bold rounded-md transition-colors cursor-pointer shrink-0"
+                  >
+                    {isUrlSaved ? (currentLanguage === "hi" ? "सुरक्षित!" : "Saved!") : (currentLanguage === "hi" ? "सहेजें" : "Save")}
+                  </button>
+                </div>
+                <p className="text-[11px] text-brand-charcoal/60 leading-relaxed mt-1">
                   {currentLanguage === "hi"
-                    ? "अपनी गूगल शीट पर जाएं, मेनू में"
-                    : "Go to your Google Sheet, select"}{" "}
-                  <strong className="font-bold font-serif">Extensions &gt; Apps Script</strong>.
-                </li>
-                <li>
-                  <span className="font-semibold">{currentLanguage === "hi" ? "कोड बदलें:" : "Paste Code:"}</span>{" "}
-                  {currentLanguage === "hi"
-                    ? "वहाँ जो भी डिफ़ॉल्ट कोड है उसे डिलीट करें और नीचे दिया गया कोड पेस्ट करें:"
-                    : "Delete any placeholder code and paste the custom script block below:"}
-                  <div className="relative mt-2 border border-brand-border rounded-md overflow-hidden bg-brand-cream max-h-40 overflow-y-auto">
-                    <pre className="p-3 text-[10px] font-mono leading-relaxed text-brand-charcoal/90 select-all">
-                      {`function doPost(e) {
+                    ? "गूगल शीट से सबमिशन को जोड़ने के लिए नीचे दिए गए 3 चरणों का पालन करें और जेनरेट हुआ वेब एप URL यहाँ सहेजें।"
+                    : "Paste your published Google Apps Script URL here to route contact form inquiries directly to your spreadsheet."}
+                </p>
+              </div>
+
+              {/* How to link instructions */}
+              <div className="border-t border-brand-border/60 pt-4 flex flex-col gap-3">
+                <h5 className="font-bold text-xs text-brand-crimson uppercase tracking-wide flex items-center gap-1">
+                  <Info className="w-3.5 h-3.5" />
+                  <span>गूगल शीट जोड़ने के चरण / How to link your Google Sheet</span>
+                </h5>
+                
+                <ol className="text-xs text-brand-charcoal/80 list-decimal list-inside flex flex-col gap-2.5 leading-relaxed pl-1">
+                  <li>
+                    <span className="font-semibold">{currentLanguage === "hi" ? "गूगल शीट स्क्रिप्ट खोलें:" : "Open Apps Script:"}</span>{" "}
+                    {currentLanguage === "hi"
+                      ? "अपनी गूगल शीट पर जाएं, मेनू में"
+                      : "Go to your Google Sheet, select"}{" "}
+                    <strong className="font-bold font-serif">Extensions &gt; Apps Script</strong>.
+                  </li>
+                  <li>
+                    <span className="font-semibold">{currentLanguage === "hi" ? "कोड बदलें:" : "Paste Code:"}</span>{" "}
+                    {currentLanguage === "hi"
+                      ? "वहाँ जो भी डिफ़ॉल्ट कोड है उसे डिलीट करें और नीचे दिया गया कोड पेस्ट करें:"
+                      : "Delete any placeholder code and paste the custom script block below:"}
+                    <div className="relative mt-2 border border-brand-border rounded-md overflow-hidden bg-brand-cream max-h-40 overflow-y-auto">
+                      <pre className="p-3 text-[10px] font-mono leading-relaxed text-brand-charcoal/90 select-all">
+                        {`function doPost(e) {
   try {
     var doc = SpreadsheetApp.getActiveSpreadsheet();
     var sheet = doc.getSheets().find(function(s) { 
@@ -1474,92 +1476,93 @@ function doGet(e) {
       .setHeader("Access-Control-Allow-Origin", "*");
   }
 }`}
-                    </pre>
-                    <button
-                      onClick={handleCopyScript}
-                      className="absolute top-2 right-2 px-2 py-1 bg-brand-charcoal/80 hover:bg-brand-crimson text-brand-cream text-[10px] font-bold rounded flex items-center gap-1 cursor-pointer transition-colors"
-                    >
-                      {copiedCode ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                      <span>{copiedCode ? "Copied!" : "Copy Code"}</span>
-                    </button>
-                  </div>
-                </li>
-                <li>
-                  <span className="font-semibold">{currentLanguage === "hi" ? "वेब एप परिनियोजित करें:" : "Deploy as Web App:"}</span>{" "}
-                  {currentLanguage === "hi"
-                    ? "ऊपर दाईं ओर Deploy बटन पर क्लिक करें > New Deployment चुनें। गियर आइकन पर क्लिक कर 'Web app' चुनें।"
-                    : "Click Deploy > New Deployment. Select 'Web app' type. Configure:"}
-                  <ul className="list-disc list-inside pl-4 mt-1 text-[11px] text-brand-charcoal/70 flex flex-col gap-0.5">
-                    <li><strong>Execute as:</strong> Me</li>
-                    <li><strong>Who has access:</strong> Anyone</li>
-                  </ul>
-                  {currentLanguage === "hi"
-                    ? "परिनियोजित (Deploy) कर जेनरेट हुए Web App URL को कॉपी कर ऊपर बने बॉक्स में पेस्ट करके सेव करें।"
-                    : "Click Deploy, authorize permissions, copy the Web App URL, and paste it into the config input above."}
-                </li>
-              </ol>
-            </div>
-
-            {/* Backups list log */}
-            <div className="border-t border-brand-border/60 pt-4 flex flex-col gap-3">
-              <div className="flex items-center justify-between">
-                <h5 className="font-bold text-xs text-brand-crimson uppercase tracking-wide flex items-center gap-1">
-                  <Database className="w-3.5 h-3.5" />
-                  <span>स्थानीय बैकअप लॉग / Local Submissions Backup ({localSubmissions.length})</span>
-                </h5>
-                {localSubmissions.length > 0 && (
-                  <button
-                    onClick={handleClearBackups}
-                    className="text-[10px] font-bold text-brand-crimson/80 hover:text-brand-crimson flex items-center gap-0.5 cursor-pointer hover:underline"
-                  >
-                    <Trash2 className="w-3 h-3" />
-                    <span>{currentLanguage === "hi" ? "सब साफ़ करें" : "Clear All"}</span>
-                  </button>
-                )}
-              </div>
-
-              {localSubmissions.length === 0 ? (
-                <p className="text-[11px] italic text-brand-charcoal/50 bg-brand-cream/50 p-3 rounded-lg text-center">
-                  {currentLanguage === "hi"
-                    ? "इस डिवाइस पर कोई स्थानीय सबमिशन सहेजा नहीं गया है।"
-                    : "No form submissions have been locally recorded on this device yet."}
-                </p>
-              ) : (
-                <div className="flex flex-col gap-2 max-h-64 overflow-y-auto pr-1">
-                  {localSubmissions.map((sub, idx) => (
-                    <div key={idx} className="bg-brand-cream border border-brand-border/60 rounded-lg p-3 text-xs flex justify-between items-start gap-4 hover:border-brand-gold/40 transition-colors">
-                      <div className="flex-1 flex flex-col gap-1.5 font-sans">
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="font-bold text-brand-charcoal text-[13px]">{sub.name}</span>
-                          {sub.org && (
-                            <span className="bg-brand-charcoal/5 text-brand-charcoal/70 px-1.5 py-0.5 rounded text-[10px] font-medium font-serif">
-                              {sub.org}
-                            </span>
-                          )}
-                          <span className="text-[10px] text-brand-charcoal/40 font-mono ml-auto">{sub.timestamp}</span>
-                        </div>
-                        <div className="text-[11px] text-brand-charcoal/70">
-                          <strong>{currentLanguage === "hi" ? "फ़ोन:" : "Phone:"}</strong> <span className="font-mono font-semibold">{sub.phone}</span>
-                        </div>
-                        <div className="text-brand-charcoal bg-brand-paper p-2 rounded border border-brand-border/30 text-[11px] leading-relaxed italic whitespace-pre-wrap mt-1">
-                          {sub.message}
-                        </div>
-                      </div>
+                      </pre>
                       <button
-                        onClick={() => handleDeleteBackupItem(idx)}
-                        className="text-brand-charcoal/40 hover:text-brand-crimson p-1 rounded hover:bg-brand-crimson/5 transition-colors focus:outline-none cursor-pointer"
-                        title="Delete this record"
+                        onClick={handleCopyScript}
+                        className="absolute top-2 right-2 px-2 py-1 bg-brand-charcoal/80 hover:bg-brand-crimson text-brand-cream text-[10px] font-bold rounded flex items-center gap-1 cursor-pointer transition-colors"
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
+                        {copiedCode ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                        <span>{copiedCode ? "Copied!" : "Copy Code"}</span>
                       </button>
                     </div>
-                  ))}
+                  </li>
+                  <li>
+                    <span className="font-semibold">{currentLanguage === "hi" ? "वेब एप परिनियोजित करें:" : "Deploy as Web App:"}</span>{" "}
+                    {currentLanguage === "hi"
+                      ? "ऊपर दाईं ओर Deploy बटन पर क्लिक करें > New Deployment चुनें। गियर आइकन पर क्लिक कर 'Web app' चुनें।"
+                      : "Click Deploy > New Deployment. Select 'Web app' type. Configure:"}
+                    <ul className="list-disc list-inside pl-4 mt-1 text-[11px] text-brand-charcoal/70 flex flex-col gap-0.5">
+                      <li><strong>Execute as:</strong> Me</li>
+                      <li><strong>Who has access:</strong> Anyone</li>
+                    </ul>
+                    {currentLanguage === "hi"
+                      ? "परिनियोजित (Deploy) कर जेनरेट हुए Web App URL को कॉपी कर ऊपर बने बॉक्स में पेस्ट करके सेव करें।"
+                      : "Click Deploy, authorize permissions, copy the Web App URL, and paste it into the config input above."}
+                  </li>
+                </ol>
+              </div>
+
+              {/* Backups list log */}
+              <div className="border-t border-brand-border/60 pt-4 flex flex-col gap-3">
+                <div className="flex items-center justify-between">
+                  <h5 className="font-bold text-xs text-brand-crimson uppercase tracking-wide flex items-center gap-1">
+                    <Database className="w-3.5 h-3.5" />
+                    <span>स्थानीय बैकअप लॉग / Local Submissions Backup ({localSubmissions.length})</span>
+                  </h5>
+                  {localSubmissions.length > 0 && (
+                    <button
+                      onClick={handleClearBackups}
+                      className="text-[10px] font-bold text-brand-crimson/80 hover:text-brand-crimson flex items-center gap-0.5 cursor-pointer hover:underline"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                      <span>{currentLanguage === "hi" ? "सब साफ़ करें" : "Clear All"}</span>
+                    </button>
+                  )}
                 </div>
-              )}
+
+                {localSubmissions.length === 0 ? (
+                  <p className="text-[11px] italic text-brand-charcoal/50 bg-brand-cream/50 p-3 rounded-lg text-center">
+                    {currentLanguage === "hi"
+                      ? "इस डिवाइस पर कोई स्थानीय सबमिशन सहेजा नहीं गया है।"
+                      : "No form submissions have been locally recorded on this device yet."}
+                  </p>
+                ) : (
+                  <div className="flex flex-col gap-2 max-h-64 overflow-y-auto pr-1">
+                    {localSubmissions.map((sub, idx) => (
+                      <div key={idx} className="bg-brand-cream border border-brand-border/60 rounded-lg p-3 text-xs flex justify-between items-start gap-4 hover:border-brand-gold/40 transition-colors">
+                        <div className="flex-1 flex flex-col gap-1.5 font-sans">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="font-bold text-brand-charcoal text-[13px]">{sub.name}</span>
+                            {sub.org && (
+                              <span className="bg-brand-charcoal/5 text-brand-charcoal/70 px-1.5 py-0.5 rounded text-[10px] font-medium font-serif">
+                                {sub.org}
+                              </span>
+                            )}
+                            <span className="text-[10px] text-brand-charcoal/40 font-mono ml-auto">{sub.timestamp}</span>
+                          </div>
+                          <div className="text-[11px] text-brand-charcoal/70">
+                            <strong>{currentLanguage === "hi" ? "फ़ोन:" : "Phone:"}</strong> <span className="font-mono font-semibold">{sub.phone}</span>
+                          </div>
+                          <div className="text-brand-charcoal bg-brand-paper p-2 rounded border border-brand-border/30 text-[11px] leading-relaxed italic whitespace-pre-wrap mt-1">
+                            {sub.message}
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => handleDeleteBackupItem(idx)}
+                          className="text-brand-charcoal/40 hover:text-brand-crimson p-1 rounded hover:bg-brand-crimson/5 transition-colors focus:outline-none cursor-pointer"
+                          title="Delete this record"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
