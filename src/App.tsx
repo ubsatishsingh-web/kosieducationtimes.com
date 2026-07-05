@@ -104,23 +104,23 @@ export default function App() {
     localStorage.setItem("preferred_language", lang);
   };
 
-  // Parsing Route from Hash
-  const getRouteFromHash = (): RouteState => {
-    const hash = window.location.hash;
-    if (hash.startsWith("#/story/")) {
-      return { page: "story", slug: hash.replace("#/story/", "") };
+  // Parsing Route from Path
+  const getRouteFromPath = (): RouteState => {
+    const path = window.location.pathname;
+    const search = window.location.search;
+    if (path.startsWith("/story/")) {
+      return { page: "story", slug: path.replace("/story/", "") };
     }
-    if (hash.startsWith("#/school/")) {
-      return { page: "school", slug: hash.replace("#/school/", "") };
+    if (path.startsWith("/school/")) {
+      return { page: "school", slug: path.replace("/school/", "") };
     }
-    if (hash === "#/schools") {
+    if (path === "/schools" || path === "/schools/") {
       return { page: "schools" };
     }
-    if (hash.startsWith("#/about")) {
-      const parts = hash.split("?");
+    if (path.startsWith("/about")) {
       let prefill: string | undefined;
-      if (parts[1]) {
-        const match = parts[1].match(/prefill=([^&]+)/);
+      if (search) {
+        const match = search.match(/prefill=([^&]+)/);
         if (match) {
           prefill = decodeURIComponent(match[1]);
         }
@@ -132,18 +132,26 @@ export default function App() {
 
   // Handle manual navigation
   const navigate = (page: string, slug?: string) => {
+    let targetPath = "/";
     if (page === "home") {
-      window.location.hash = "";
-      if (typeof window !== "undefined" && window.history && window.history.replaceState) {
-        window.history.replaceState(null, "", window.location.pathname + window.location.search);
-      }
+      targetPath = "/";
+    } else if (page === "schools") {
+      targetPath = "/schools";
+    } else if (page === "about") {
+      targetPath = slug ? `/about?prefill=${encodeURIComponent(slug)}` : "/about";
+    } else if (page === "story" && slug) {
+      targetPath = `/story/${slug}`;
+    } else if (page === "school" && slug) {
+      targetPath = `/school/${slug}`;
     }
-    else if (page === "schools") window.location.hash = "#/schools";
-    else if (page === "about") {
-      window.location.hash = slug ? `#/about?prefill=${encodeURIComponent(slug)}` : "#/about";
+
+    if (typeof window !== "undefined" && window.history && window.history.pushState) {
+      window.history.pushState(null, "", targetPath);
+      setRoute(getRouteFromPath());
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      window.location.href = targetPath;
     }
-    else if (page === "story" && slug) window.location.hash = `#/story/${slug}`;
-    else if (page === "school" && slug) window.location.hash = `#/school/${slug}`;
   };
 
   // Dynamic Data fetching
@@ -225,23 +233,18 @@ export default function App() {
 
     fetchData();
 
-    // Listen to hash routes
-    const handleHashChange = () => {
-      setRoute(getRouteFromHash());
+    // Listen to path routes
+    const handlePopState = () => {
+      setRoute(getRouteFromPath());
       window.scrollTo({ top: 0, behavior: "smooth" });
-
-      // Clean up trailing '#' from address bar if on home page
-      if (window.location.hash === "" && window.history && window.history.replaceState) {
-        window.history.replaceState(null, "", window.location.pathname + window.location.search);
-      }
     };
 
-    window.addEventListener("hashchange", handleHashChange);
+    window.addEventListener("popstate", handlePopState);
     // Initial route check
-    handleHashChange();
+    handlePopState();
 
     return () => {
-      window.removeEventListener("hashchange", handleHashChange);
+      window.removeEventListener("popstate", handlePopState);
     };
   }, []);
 
