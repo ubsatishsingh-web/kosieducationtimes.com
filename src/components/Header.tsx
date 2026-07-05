@@ -13,7 +13,6 @@ interface HeaderProps {
   setLanguage: (lang: "hi" | "en") => void;
   currentRoute: { page: string; slug?: string };
   navigate: (page: string, slug?: string) => void;
-  onOpenSettings: () => void;
 }
 
 export default function Header({
@@ -21,7 +20,6 @@ export default function Header({
   setLanguage,
   currentRoute,
   navigate,
-  onOpenSettings,
 }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const t = translations[currentLanguage];
@@ -56,17 +54,19 @@ export default function Header({
       <div className="bg-brand-charcoal text-brand-cream text-xs py-1.5 px-4 flex justify-between items-center">
         <div className="font-sans flex items-center gap-1">
           <span className="inline-block w-2 h-2 rounded-full bg-brand-gold animate-pulse"></span>
-          <span>{t.byZera}</span>
+          <a
+            href="https://zeratech.io"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-brand-gold hover:underline transition-colors cursor-pointer"
+          >
+            {t.byZera}
+          </a>
         </div>
         <div className="flex items-center gap-4">
-          <button
-            onClick={onOpenSettings}
-            className="flex items-center gap-1 hover:text-brand-gold transition-colors font-sans focus:outline-none cursor-pointer"
-            aria-label="Configure CSV sources"
-          >
-            <Settings className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">CSV स्रोत / Settings</span>
-          </button>
+          <div className="hidden sm:block font-serif italic text-brand-gold/80 text-[11px] tracking-wide">
+            {currentLanguage === "hi" ? "बिहार की शैक्षणिक चेतना का नया स्वर" : "The Voice of Educational Consciousness in Bihar"}
+          </div>
         </div>
       </div>
 
@@ -101,17 +101,22 @@ export default function Header({
           </div>
 
           {/* Right: Powered By and Desk Info */}
-          <div className="hidden md:flex flex-col items-end border-l border-brand-border/60 pl-4 text-right">
+          <a
+            href="https://zeratech.io"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden md:flex flex-col items-end border-l border-brand-border/60 pl-4 text-right hover:opacity-80 transition-opacity cursor-pointer group/zera"
+          >
             <span className="text-[10px] font-bold text-brand-charcoal/50 uppercase tracking-widest block">
               {currentLanguage === "hi" ? "डिजिटल पार्टनर" : "DIGITAL PARTNER"}
             </span>
-            <span className="font-serif font-bold text-xs text-brand-crimson mt-0.5 block">
+            <span className="font-serif font-bold text-xs text-brand-crimson mt-0.5 block group-hover/zera:underline">
               ज़ेरा टेक्नोलॉजीज
             </span>
-            <span className="text-[10px] text-brand-charcoal/50 font-sans block">
+            <span className="text-[10px] text-brand-charcoal/50 font-sans block group-hover/zera:underline">
               Zera Technologies
             </span>
-          </div>
+          </a>
         </div>
       </div>
 
@@ -202,16 +207,6 @@ export default function Header({
                   </button>
                 );
               })}
-              <button
-                onClick={() => {
-                  onOpenSettings();
-                  setMobileMenuOpen(false);
-                }}
-                className="w-full text-left px-4 py-2.5 text-brand-charcoal hover:bg-brand-paper hover:text-brand-crimson flex items-center gap-2 rounded-md transition-all"
-              >
-                <Settings className="w-4 h-4" />
-                <span>CSV डेटा स्रोत सेट करें</span>
-              </button>
             </div>
           </motion.div>
         )}

@@ -29,7 +29,14 @@ export default function Footer({ currentLanguage, navigate }: FooterProps) {
               : "Kosi Education Times is the premier bilingual digital platform celebrating schools and educational excellence in the Kosi region of Bihar (Madhepura, Saharsa, Purnia, Supaul)."}
           </p>
           <div className="text-xs text-brand-cream/60 mt-2 font-mono">
-            {t.byZera}
+            <a
+              href="https://zeratech.io"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-brand-gold hover:underline transition-colors cursor-pointer"
+            >
+              {t.byZera}
+            </a>
           </div>
         </div>
 
@@ -74,7 +81,14 @@ export default function Footer({ currentLanguage, navigate }: FooterProps) {
           </h3>
           <div className="flex flex-col gap-3 text-sm text-brand-cream/90">
             <div className="font-semibold text-brand-gold font-serif">
-              {t.orgName}
+              <a
+                href="https://zeratech.io"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-brand-paper hover:underline transition-all cursor-pointer"
+              >
+                {t.orgName}
+              </a>
             </div>
             <div className="flex items-start gap-2.5">
               <MapPin className="w-4 h-4 text-brand-gold shrink-0 mt-0.5" />
@@ -96,14 +110,21 @@ export default function Footer({ currentLanguage, navigate }: FooterProps) {
           <p>
             &copy; 2026 {t.siteName}. All Rights Reserved.
           </p>
-          <p className="flex items-center gap-1">
-            <span>{t.byZera}</span>
-            <span className="text-brand-gold">|</span>
+          <p className="flex items-center gap-1.5">
             <a
-              href="https://zeratechnologies.com"
+              href="https://zeratech.io"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-brand-gold transition-colors inline-flex items-center gap-0.5"
+              className="hover:text-brand-gold hover:underline transition-colors cursor-pointer"
+            >
+              {t.byZera}
+            </a>
+            <span className="text-brand-gold">|</span>
+            <a
+              href="https://zeratech.io"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-brand-gold hover:underline transition-colors inline-flex items-center gap-0.5 font-bold"
             >
               <span>Zera Technologies</span>
               <ExternalLink className="w-3 h-3" />

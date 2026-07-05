@@ -13,7 +13,7 @@ import Footer from "./components/Footer";
 import Hero from "./components/Hero";
 import StoryCard from "./components/StoryCard";
 import SchoolCard from "./components/SchoolCard";
-import SettingsModal from "./components/SettingsModal";
+import urlConfig from "./urls.json";
 
 import {
   Calendar,
@@ -41,6 +41,35 @@ interface RouteState {
   prefill?: string;
 }
 
+function linkifyZera(text: string, isLightBg = false) {
+  const regex = /(Zera Technologies|ज़ीरा टेक्नोलॉजीज|ज़ेरा टेक्नोलॉजीज)/g;
+  const parts = text.split(regex);
+  return (
+    <>
+      {parts.map((part, index) => {
+        if (part.match(regex)) {
+          return (
+            <a
+              key={index}
+              href="https://zeratech.io"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={
+                isLightBg
+                  ? "text-brand-crimson font-bold hover:underline cursor-pointer"
+                  : "text-brand-gold font-bold hover:underline hover:text-brand-paper transition-all cursor-pointer"
+              }
+            >
+              {part}
+            </a>
+          );
+        }
+        return part;
+      })}
+    </>
+  );
+}
+
 export default function App() {
   // Language State - default is Hindi as requested
   const [currentLanguage, setLanguage] = useState<Language>(() => {
@@ -49,7 +78,6 @@ export default function App() {
   });
 
   // UI state
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [districtFilter, setDistrictFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -111,9 +139,9 @@ export default function App() {
     setLoading(true);
     setError(null);
     try {
-      const storiesUrl = localStorage.getItem("csv_stories_url") || "/data/stories.csv";
-      const schoolsUrl = localStorage.getItem("csv_schools_url") || "/data/schools.csv";
-      const mediaUrl = localStorage.getItem("csv_media_url") || "/data/media.csv";
+      const storiesUrl = urlConfig.storiesUrl || localStorage.getItem("csv_stories_url") || "/data/stories.csv";
+      const schoolsUrl = urlConfig.schoolsUrl || localStorage.getItem("csv_schools_url") || "/data/schools.csv";
+      const mediaUrl = urlConfig.mediaUrl || localStorage.getItem("csv_media_url") || "/data/media.csv";
 
       const fetchCSV = async (url: string, fallbackUrl: string): Promise<string> => {
         try {
@@ -154,6 +182,35 @@ export default function App() {
 
   // Fetch data on boot or when configured URLs change
   useEffect(() => {
+    // Sync URLs from localStorage to server urls.json if they differ and exist
+    const syncUrlsWithServer = async () => {
+      const localStories = localStorage.getItem("csv_stories_url") || "";
+      const localSchools = localStorage.getItem("csv_schools_url") || "";
+      const localMedia = localStorage.getItem("csv_media_url") || "";
+
+      if (
+        (localStories && localStories !== urlConfig.storiesUrl) ||
+        (localSchools && localSchools !== urlConfig.schoolsUrl) ||
+        (localMedia && localMedia !== urlConfig.mediaUrl)
+      ) {
+        try {
+          await fetch("/api/sync-urls", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              storiesUrl: localStories,
+              schoolsUrl: localSchools,
+              mediaUrl: localMedia,
+            }),
+          });
+          console.log("Successfully synced Google Sheet CSV URLs to server config!");
+        } catch (e) {
+          console.error("Failed to sync Google Sheet URLs to server:", e);
+        }
+      }
+    };
+    syncUrlsWithServer();
+
     fetchData();
 
     // Listen to hash routes
@@ -170,20 +227,6 @@ export default function App() {
       window.removeEventListener("hashchange", handleHashChange);
     };
   }, []);
-
-  // Save CSV URLs handler
-  const handleSaveUrls = (storiesUrl: string, schoolsUrl: string, mediaUrl: string) => {
-    if (storiesUrl) localStorage.setItem("csv_stories_url", storiesUrl);
-    else localStorage.removeItem("csv_stories_url");
-
-    if (schoolsUrl) localStorage.setItem("csv_schools_url", schoolsUrl);
-    else localStorage.removeItem("csv_schools_url");
-
-    if (mediaUrl) localStorage.setItem("csv_media_url", mediaUrl);
-    else localStorage.removeItem("csv_media_url");
-
-    fetchData();
-  };
 
   // Triggered when a school's digital consultation CTA is clicked
   const handleContactPrefill = (schoolName: string) => {
@@ -210,7 +253,6 @@ export default function App() {
         setLanguage={handleSetLanguage}
         currentRoute={route}
         navigate={navigate}
-        onOpenSettings={() => setIsSettingsOpen(true)}
       />
 
       {/* Main Layout Area */}
@@ -313,16 +355,20 @@ export default function App() {
                             : "Take Your School Online"}
                         </h3>
                         <p className="text-xs sm:text-sm text-brand-cream/80 leading-relaxed">
-                          {currentLanguage === "hi"
-                            ? "ज़ीरा टेक्नोलॉजीज बिहार के स्कूलों को बेहतरीन और सुरक्षित वेबसाइट प्रदान करता है। आज ही संपर्क कर आधुनिक तकनीकों से जुड़ें।"
-                            : "Zera Technologies develops modern, mobile-friendly websites for schools across Purnia division and Kosi region at low costs."}
+                          {linkifyZera(
+                            currentLanguage === "hi"
+                              ? "ज़ीरा टेक्नोलॉजीज बिहार के स्कूलों को बेहतरीन और सुरक्षित वेबसाइट प्रदान करता है। आज ही संपर्क कर आधुनिक तकनीकों से जुड़ें।"
+                              : "Zera Technologies develops modern, mobile-friendly websites for schools across Purnia division and Kosi region at low costs."
+                          )}
                         </p>
-                        <button
-                          onClick={() => handleContactPrefill("Custom School Site Request")}
-                          className="w-full mt-2 py-2.5 bg-brand-gold hover:bg-brand-paper text-brand-charcoal font-bold text-xs rounded-lg transition-colors focus:outline-none"
+                        <a
+                          href="https://zeratech.io"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full mt-2 py-2.5 bg-brand-gold hover:bg-brand-paper text-brand-charcoal font-bold text-xs rounded-lg transition-colors focus:outline-none text-center block"
                         >
                           {t.getWebsite}
-                        </button>
+                        </a>
                       </div>
 
                       {/* Editorial board desk note */}
@@ -793,14 +839,16 @@ export default function App() {
                               {t.getCustomWebsiteHeader}
                             </h4>
                             <p className="text-xs text-brand-cream/80 leading-relaxed">
-                              {t.getCustomWebsiteDesc}
+                              {linkifyZera(t.getCustomWebsiteDesc)}
                             </p>
-                            <button
-                              onClick={() => handleContactPrefill(school.school_name)}
-                              className="w-full mt-1.5 py-2.5 bg-brand-gold hover:bg-brand-paper text-brand-charcoal font-bold text-xs rounded-lg transition-colors focus:outline-none"
+                            <a
+                              href="https://zeratech.io"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="w-full mt-1.5 py-2.5 bg-brand-gold hover:bg-brand-paper text-brand-charcoal font-bold text-xs rounded-lg transition-colors focus:outline-none text-center block"
                             >
                               {t.getWebsite}
-                            </button>
+                            </a>
                           </div>
                         </div>
 
@@ -908,7 +956,7 @@ export default function App() {
                         {t.aboutText1}
                       </p>
                       <p className="text-sm leading-relaxed text-brand-charcoal/80">
-                        {t.aboutText2}
+                        {linkifyZera(t.aboutText2, true)}
                       </p>
 
                       {/* Coordinates box */}
@@ -984,17 +1032,7 @@ export default function App() {
         </AnimatePresence>
       </main>
 
-      {/* Settings Modal (CSV sources config) */}
-      <AnimatePresence>
-        {isSettingsOpen && (
-          <SettingsModal
-            currentLanguage={currentLanguage}
-            isOpen={isSettingsOpen}
-            onClose={() => setIsSettingsOpen(false)}
-            onSave={handleSaveUrls}
-          />
-        )}
-      </AnimatePresence>
+
 
       {/* Site Footer */}
       <Footer currentLanguage={currentLanguage} navigate={navigate} />

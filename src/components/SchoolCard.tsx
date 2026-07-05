@@ -139,13 +139,15 @@ export default function SchoolCard({
           </button>
 
           {/* Zera Tech website builder proposal button */}
-          <button
-            onClick={() => onContactRequest(name)}
-            className="w-full py-2 bg-[#fdfaf2] hover:bg-brand-gold/15 text-brand-terracotta border border-brand-terracotta/20 hover:border-brand-gold rounded-lg text-[11px] font-bold transition-all focus:outline-none flex items-center justify-center gap-1"
+          <a
+            href="https://zeratech.io"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full py-2 bg-[#fdfaf2] hover:bg-brand-gold/15 text-brand-terracotta border border-brand-terracotta/20 hover:border-brand-gold rounded-lg text-[11px] font-bold transition-all focus:outline-none flex items-center justify-center gap-1 text-center"
           >
-            <Sparkles className="w-3 h-3 text-brand-gold animate-pulse shrink-0" />
+            <Sparkles className="w-3.5 h-3.5 text-brand-gold animate-pulse shrink-0" />
             <span className="truncate">{t.getWebsite}</span>
-          </button>
+          </a>
         </div>
       </div>
     </motion.div>
