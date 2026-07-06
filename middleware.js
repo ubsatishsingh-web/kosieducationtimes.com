@@ -18,7 +18,7 @@ export default async function middleware(request) {
       const res = await fetch(STORIES_CSV_URL);
       if (!res.ok) return;
       const csvText = await res.text();
-      const rows = csvText.split('\n').map(r => parseCsvRow(r));
+      const rows = parseCSV(csvText);
       const headers = rows[0];
 
       const slugIndex = headers.indexOf('slug');
@@ -73,7 +73,7 @@ export default async function middleware(request) {
       const res = await fetch(SCHOOLS_CSV_URL);
       if (!res.ok) return;
       const csvText = await res.text();
-      const rows = csvText.split('\n').map(r => parseCsvRow(r));
+      const rows = parseCSV(csvText);
       const headers = rows[0];
 
       const slugIndex = headers.indexOf('slug');
@@ -120,23 +120,52 @@ export default async function middleware(request) {
   }
 }
 
-function parseCsvRow(row) {
-  var result = [];
-  var current = '';
-  var inQuotes = false;
-  for (var i = 0; i < row.length; i++) {
-    var char = row[i];
+function parseCSV(text) {
+  const lines = [];
+  let row = [];
+  let inQuotes = false;
+  let currentValue = "";
+
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    const nextChar = text[i + 1];
+
     if (char === '"') {
-      inQuotes = !inQuotes;
+      if (inQuotes && nextChar === '"') {
+        // Escaped quote "" inside a quote
+        currentValue += '"';
+        i++; // skip next quote
+      } else {
+        // Toggle quote block state
+        inQuotes = !inQuotes;
+      }
     } else if (char === ',' && !inQuotes) {
-      result.push(current.trim());
-      current = '';
+      row.push(currentValue.trim());
+      currentValue = "";
+    } else if ((char === '\r' || char === '\n') && !inQuotes) {
+      if (char === '\r' && nextChar === '\n') {
+        i++; // skip LF
+      }
+      row.push(currentValue.trim());
+      // Only push non-empty rows
+      if (row.length > 1 || (row.length === 1 && row[0] !== "")) {
+        lines.push(row);
+      }
+      row = [];
+      currentValue = "";
     } else {
-      current += char;
+      currentValue += char;
     }
   }
-  result.push(current.trim());
-  return result;
+
+  if (row.length > 0 || currentValue !== "") {
+    row.push(currentValue.trim());
+    if (row.length > 1 || (row.length === 1 && row[0] !== "")) {
+      lines.push(row);
+    }
+  }
+
+  return lines;
 }
 
 function escapeHtml(str) {
