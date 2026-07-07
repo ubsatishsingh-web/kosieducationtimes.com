@@ -149,7 +149,16 @@ export function parseSchoolsCSV(csvText: string): School[] {
   for (let i = 1; i < rows.length; i++) {
     const row = rows[i];
     const getVal = (colName: string) => {
-      const idx = indexMap[colName.toLowerCase()];
+      const lowerCol = colName.toLowerCase();
+      let idx = indexMap[lowerCol];
+      if (idx === undefined) {
+        const matchingKey = Object.keys(indexMap).find(
+          key => key.includes(lowerCol) || lowerCol.includes(key) || key.replace(/[\s_-]/g, "") === lowerCol.replace(/[\s_-]/g, "")
+        );
+        if (matchingKey) {
+          idx = indexMap[matchingKey];
+        }
+      }
       return idx !== undefined && idx < row.length ? row[idx] : "";
     };
 
@@ -166,13 +175,14 @@ export function parseSchoolsCSV(csvText: string): School[] {
       slug: getVal("slug"),
       location: getVal("location"),
       location_hi: getVal("location_hi"),
-      contact_person: getVal("contact_person"),
+      contact_person: getVal("contact_person") || getVal("contact person"),
       phone: getVal("phone"),
       address: getVal("address"),
       logo_url: getVal("logo_url") || "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=150",
-      featured: getVal("featured").toLowerCase() === "true" || getVal("featured") === "1",
+      featured: getVal("featured").toLowerCase() === "true" || getVal("featured") === "1" || getVal("featured(yes/no)").toLowerCase() === "yes",
       website_status: getVal("website_status") || "Not Started",
       story_ids,
+      website_url: getVal("website_url") || undefined,
     };
 
     if (school.id) {

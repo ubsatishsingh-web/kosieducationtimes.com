@@ -33,6 +33,7 @@ export interface School {
   featured: boolean;
   website_status: string; // Completed, In Progress, Not Started
   story_ids: string[]; // array of strings
+  website_url?: string;
 }
 
 export interface Media {

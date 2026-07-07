@@ -985,11 +985,27 @@ export default function App() {
                                 <div>
                                   <div className="text-[10px] font-bold text-brand-charcoal/50 uppercase">{t.websiteStatusLabel}</div>
                                   <div className="mt-1 font-bold text-sm">
-                                    {school.website_status.toLowerCase() === "completed" ? (
+                                    {school.website_status.toLowerCase() === "live" ? (
+                                      school.website_url ? (
+                                        <a
+                                          href={school.website_url}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="text-brand-forest hover:text-brand-forest/80 underline flex items-center gap-1 text-xs"
+                                        >
+                                          <span>{currentLanguage === "hi" ? "विजिट करें: " : "Visit Website: "}</span>
+                                          <span className="break-all">{school.website_url}</span>
+                                        </a>
+                                      ) : (
+                                        <span className="text-brand-forest bg-brand-forest/10 px-2 py-0.5 rounded text-xs inline-block border border-brand-forest/20">
+                                          {t.completed}
+                                        </span>
+                                      )
+                                    ) : (school.website_status.toLowerCase() === "completed" || school.website_status.toLowerCase() === "active") ? (
                                       <span className="text-brand-forest bg-brand-forest/10 px-2 py-0.5 rounded text-xs inline-block border border-brand-forest/20">
                                         {t.completed}
                                       </span>
-                                    ) : school.website_status.toLowerCase() === "in progress" ? (
+                                    ) : (school.website_status.toLowerCase() === "building" || school.website_status.toLowerCase() === "in progress" || school.website_status.toLowerCase() === "pending") ? (
                                       <span className="text-brand-gold bg-brand-gold/10 px-2 py-0.5 rounded text-xs inline-block border border-brand-gold/20">
                                         {t.inProgress}
                                       </span>

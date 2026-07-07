@@ -29,14 +29,14 @@ export default function SchoolCard({
   // Website Status Colors & Text
   const getStatusBadge = (status: string) => {
     const cleanStatus = status.toLowerCase().trim();
-    if (cleanStatus === "completed" || cleanStatus === "active") {
+    if (cleanStatus === "completed" || cleanStatus === "active" || cleanStatus === "live") {
       return (
         <span className="inline-flex items-center gap-1 bg-brand-forest/10 border border-brand-forest/20 text-brand-forest text-[11px] font-sans font-bold px-2.5 py-1 rounded-md">
           <span className="w-1.5 h-1.5 bg-brand-forest rounded-full"></span>
           <span>{t.completed}</span>
         </span>
       );
-    } else if (cleanStatus === "in progress" || cleanStatus === "pending") {
+    } else if (cleanStatus === "in progress" || cleanStatus === "pending" || cleanStatus === "building") {
       return (
         <span className="inline-flex items-center gap-1 bg-brand-gold/10 border border-brand-gold/20 text-brand-gold text-[11px] font-sans font-bold px-2.5 py-1 rounded-md">
           <span className="w-1.5 h-1.5 bg-brand-gold rounded-full"></span>
