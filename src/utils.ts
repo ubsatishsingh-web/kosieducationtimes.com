@@ -12,42 +12,66 @@ import { Story, School, Media } from "./types";
 export function parseCSV(text: string): string[][] {
   const lines: string[][] = [];
   let row: string[] = [];
-  let inQuotes = false;
   let currentValue = "";
+  let inQuotes = false;
+  let isFieldStart = true;
+  let hasQuotes = false;
 
   for (let i = 0; i < text.length; i++) {
     const char = text[i];
     const nextChar = text[i + 1];
 
-    if (char === '"') {
-      if (inQuotes && nextChar === '"') {
-        // Escaped quote "" inside a quote
-        currentValue += '"';
-        i++; // skip next quote
+    if (isFieldStart) {
+      if (char === ' ' || char === '\t') {
+        currentValue += char;
+        continue;
+      }
+      if (char === '"') {
+        inQuotes = true;
+        hasQuotes = true;
+        isFieldStart = false;
+        currentValue = "";
+        continue;
+      }
+      isFieldStart = false;
+    }
+
+    if (inQuotes) {
+      if (char === '"') {
+        if (nextChar === '"') {
+          currentValue += '"';
+          i++;
+        } else {
+          inQuotes = false;
+        }
       } else {
-        // Toggle quote block state
-        inQuotes = !inQuotes;
+        currentValue += char;
       }
-    } else if (char === ',' && !inQuotes) {
-      row.push(currentValue.trim());
-      currentValue = "";
-    } else if ((char === '\r' || char === '\n') && !inQuotes) {
-      if (char === '\r' && nextChar === '\n') {
-        i++; // skip LF
-      }
-      row.push(currentValue.trim());
-      // Only push non-empty rows
-      if (row.length > 1 || (row.length === 1 && row[0] !== "")) {
-        lines.push(row);
-      }
-      row = [];
-      currentValue = "";
     } else {
-      currentValue += char;
+      if (char === ',') {
+        row.push(currentValue.trim());
+        currentValue = "";
+        isFieldStart = true;
+        hasQuotes = false;
+      } else if (char === '\r' || char === '\n') {
+        if (char === '\r' && nextChar === '\n') {
+          i++;
+        }
+        row.push(currentValue.trim());
+        if (row.length > 1 || (row.length === 1 && row[0] !== "")) {
+          lines.push(row);
+        }
+        row = [];
+        currentValue = "";
+        isFieldStart = true;
+        hasQuotes = false;
+      } else {
+        currentValue += char;
+      }
     }
   }
 
-  if (row.length > 0 || currentValue !== "") {
+  if (row.length > 0 || currentValue !== "" || hasQuotes) {
     row.push(currentValue.trim());
     if (row.length > 1 || (row.length === 1 && row[0] !== "")) {
       lines.push(row);
